@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English & Computer Tuition Management App</title>
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- React 18 & Babel CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-100 antialiased selection:bg-sky-500 selection:text-white">
+
+  <div id="root"></div>
+
+  <!-- Script setup for Vite entry if Vite dev server is running -->
+  <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Standalone Babel Script for direct browser loading -->
+  <script type="text/babel">
+    // Only execute inline babel script if Vite hasn't already mounted the app
+    if (!window.__VITE_REACT_APP_MOUNTED__) {
+      window.__VITE_REACT_APP_MOUNTED__ = true;
+
+      const { useState, useEffect, useMemo } = React;
+
+      const INITIAL_SETTINGS = {
+        tuitionName: 'Excel English & Computer Tuition Academy',
+        tuitionLogo: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=120&auto=format&fit=crop&q=80',
+        address: '102 Education Hub, Ring Road, City Center',
+        phone: '+91 98765 43210',
+        email: 'info@exceltuition.com',
+        website: 'www.exceltuition.com',
+        receiptFooter: 'Thank you for choosing Excel Academy. Fees once paid are non-refundable.',
+        reportFooter: 'Official Academic Progress Document • Excel Tuition Center',
+        currentAcademicYear: '2026-2027',
+        currencySymbol: '₹'
+      };
+
+      const INITIAL_STUDENTS = [
+        {
+          id: 1,
+          studentId: 'STU2026-001',
+          studentName: 'Aarav Patel',
+          photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+          fatherName: 'Vikram Patel',
+          motherName: 'Sunita Patel',
+          mobileNumber: '9876543210',
+          parentMobileNumber: '9876543211',
+          email: 'aarav.patel@gmail.com',
+          address: '14 MG Road, Sector 4, City Center',
+          dateOfBirth: '2008-05-14',
+          joiningDate: '2026-04-01',
+          courseName: 'English & Computer',
+          batchName: 'English & Computer Combo Batch (EC1)',
+          batchTiming: '04:00 PM - 06:00 PM (Tue,Thu,Sat)',
+          totalFees: 12000,
+          discountAmount: 1000,
+          paidFees: 8000,
+          pendingFees: 3000,
+          nextDueDate: '2026-08-15',
+          status: 'Active'
+        },
+        {
+          id: 2,
+          studentId: 'STU2026-002',
+          studentName: 'Priya Sharma',
+          photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+          fatherName: 'Ramesh Sharma',
+          motherName: 'Kavita Sharma',
+          mobileNumber: '9876543212',
+          parentMobileNumber: '9876543213',
+          email: 'priya.sharma@gmail.com',
+          address: '45 Sunshine Apartments, Civil Lines',
+          dateOfBirth: '2009-08-22',
+          joiningDate: '2026-04-02',
+          courseName: 'English',
+          batchName: 'English Morning Batch (A1)',
+          batchTiming: '08:00 AM - 09:30 AM (Mon,Wed,Fri)',
+          totalFees: 6000,
+          discountAmount: 0,
+          paidFees: 6000,
+          pendingFees: 0,
+          nextDueDate: 'Completed',
+          status: 'Active'
+        },
+        {
+          id: 3,
+          studentId: 'STU2026-003',
+          studentName: 'Rohan Gupta',
+          photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+          fatherName: 'Anil Gupta',
+          motherName: 'Meena Gupta',
+          mobileNumber: '9876543214',
+          parentMobileNumber: '9876543215',
+          email: 'rohan.gupta@yahoo.com',
+          address: '88 Green Park Colony, Main Road',
+          dateOfBirth: '2008-11-10',
+          joiningDate: '2026-04-05',
+          courseName: 'Computer',
+          batchName: 'Computer Morning Batch (C1)',
+          batchTiming: '09:30 AM - 11:00 AM (Mon,Wed,Fri)',
+          totalFees: 8000,
+          discountAmount: 500,
+          paidFees: 4000,
+          pendingFees: 3500,
+          nextDueDate: '2026-08-10',
+          status: 'Active'
+        },
+        {
+          id: 4,
+          studentId: 'STU2026-004',
+          studentName: 'Ananya Joshi',
+          photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+          fatherName: 'Deepak Joshi',
+          motherName: 'Sangeeta Joshi',
+          mobileNumber: '9876543216',
+          parentMobileNumber: '9876543217',
+          email: 'ananya.j@gmail.com',
+          address: '101 Royal Residency, Station Road',
+          dateOfBirth: '2009-02-18',
+          joiningDate: '2026-04-06',
+          courseName: 'English & Computer',
+          batchName: 'English & Computer Combo Batch (EC1)',
+          batchTiming: '04:00 PM - 06:00 PM (Tue,Thu,Sat)',
+          totalFees: 12000,
+          discountAmount: 2000,
+          paidFees: 10000,
+          pendingFees: 0,
+          nextDueDate: 'Completed',
+          status: 'Active'
+        },
+        {
+          id: 5,
+          studentId: 'STU2026-005',
+          studentName: 'Kabir Singh',
+          photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+          fatherName: 'Jaswinder Singh',
+          motherName: 'Harpreet Kaur',
+          mobileNumber: '9876543218',
+          parentMobileNumber: '9876543219',
+          email: 'kabir.singh@gmail.com',
+          address: '72 Model Town, Near Gurudwara',
+          dateOfBirth: '2008-07-30',
+          joiningDate: '2026-04-10',
+          courseName: 'English',
+          batchName: 'English Evening Practice (A2)',
+          batchTiming: '06:00 PM - 07:30 PM (Tue,Thu,Sat)',
+          totalFees: 6000,
+          discountAmount: 0,
+          paidFees: 3000,
+          pendingFees: 3000,
+          nextDueDate: '2026-08-20',
+          status: 'Active'
+        }
+      ];
+
+      const INITIAL_BATCHES = [
+        { id: 1, batchName: 'English Morning Batch (A1)', courseName: 'English', teacherName: 'Prof. Rajesh Sharma', timing: '08:00 AM - 09:30 AM', days: 'Mon,Wed,Fri', capacity: 25, enrolled: 8 },
+        { id: 2, batchName: 'Computer Morning Batch (C1)', courseName: 'Computer', teacherName: 'Er. Anita Verma', timing: '09:30 AM - 11:00 AM', days: 'Mon,Wed,Fri', capacity: 20, enrolled: 7 },
+        { id: 3, batchName: 'English & Computer Combo Batch (EC1)', courseName: 'English & Computer', teacherName: 'Dr. Suresh Mehta', timing: '04:00 PM - 06:00 PM', days: 'Tue,Thu,Sat', capacity: 30, enrolled: 6 },
+        { id: 4, batchName: 'English Evening Practice (A2)', courseName: 'English', teacherName: 'Prof. Rajesh Sharma', timing: '06:00 PM - 07:30 PM', days: 'Tue,Thu,Sat', capacity: 25, enrolled: 5 }
+      ];
+
+      const INITIAL_PAYMENTS = [
+        { id: 1, receiptNumber: 'REC-2026-0101', studentName: 'Aarav Patel', studentId: 'STU2026-001', courseName: 'English & Computer', amount: 5000, paymentDate: '2026-04-01', paymentMode: 'UPI', reference: 'UPI/619284019283', notes: '1st Installment Fee' },
+        { id: 2, receiptNumber: 'REC-2026-0102', studentName: 'Aarav Patel', studentId: 'STU2026-001', courseName: 'English & Computer', amount: 3000, paymentDate: '2026-06-10', paymentMode: 'Cash', reference: 'CASH-9921', notes: '2nd Installment Fee' },
+        { id: 3, receiptNumber: 'REC-2026-0103', studentName: 'Priya Sharma', studentId: 'STU2026-002', courseName: 'English', amount: 6000, paymentDate: '2026-04-02', paymentMode: 'Bank Transfer', reference: 'NEFT-AXIS-992', notes: 'Full Fee Paid' }
+      ];
+
+      const INITIAL_TESTS = [
+        { id: 1, testName: 'English Grammar & Spoken Evaluation 1', subjectName: 'English Grammar', courseName: 'English', batchName: 'English Morning Batch (A1)', testDate: '2026-05-15', totalMarks: 50, passingMarks: 20, status: 'Published' },
+        { id: 2, testName: 'MS Office & Practical Speed Test', subjectName: 'Computer Office Suite', courseName: 'Computer', batchName: 'Computer Morning Batch (C1)', testDate: '2026-06-01', totalMarks: 100, passingMarks: 40, status: 'Published' },
+        { id: 3, testName: 'Combined English & Computer Exam', subjectName: 'Web & Spoken English', courseName: 'English & Computer', batchName: 'English & Computer Combo Batch (EC1)', testDate: '2026-07-10', totalMarks: 100, passingMarks: 40, status: 'Published' }
+      ];
+
+      const INITIAL_RESULTS = [
+        { id: 1, testId: 3, studentId: 1, studentName: 'Aarav Patel', obtainedMarks: 88, totalMarks: 100, percentage: 88, grade: 'A', status: 'Pass', performance: 'Excellent', remarks: 'Great vocabulary & HTML layout!', rank: 2 },
+        { id: 2, testId: 1, studentId: 2, studentName: 'Priya Sharma', obtainedMarks: 47, totalMarks: 50, percentage: 94, grade: 'A+', status: 'Pass', performance: 'Excellent', remarks: 'Flawless grammar & accent.', rank: 1 }
+      ];
+
+      const INITIAL_MATERIALS = [
+        { id: 1, title: 'English Grammar & Tenses Formula Guide', subject: 'Grammar', courseName: 'English', type: 'PDF', uploadDate: '2026-04-10', size: '2.4 MB', url: '#' },
+        { id: 2, title: 'MS Excel Advanced VLOOKUP Practice Sheet', subject: 'MS Office', courseName: 'Computer', type: 'Worksheet', uploadDate: '2026-04-20', size: '3.8 MB', url: '#' },
+        { id: 3, title: 'Spoken English Daily Conversation Video', subject: 'Public Speaking', courseName: 'English', type: 'Video', uploadDate: '2026-05-02', size: 'Video Stream', url: 'https://youtube.com' }
+      ];
+
+      const INITIAL_NOTIFICATIONS = [
+        { id: 1, title: 'Independence Day Holiday Notice', message: 'Tuition will remain closed on 15th August 2026 for Independence Day.', type: 'Holiday', date: '2026-08-01', read: false },
+        { id: 2, title: 'Tally Prime Practical Exam Reminder', message: 'Computer Batch C1 exam scheduled for 10th August at 09:30 AM.', type: 'Test Schedule', date: '2026-08-03', read: true }
+      ];
+
+      function StandaloneApp() {
+        const [role, setRole] = useState('Admin');
+        const [activeTab, setActiveTab] = useState('dashboard');
+        const [students, setStudents] = useState(INITIAL_STUDENTS);
+        const [activeStudentId, setActiveStudentId] = useState(1);
+        const [batches, setBatches] = useState(INITIAL_BATCHES);
+        const [payments, setPayments] = useState(INITIAL_PAYMENTS);
+        const [tests, setTests] = useState(INITIAL_TESTS);
+        const [results, setResults] = useState(INITIAL_RESULTS);
+        const [materials, setMaterials] = useState(INITIAL_MATERIALS);
+        const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+        const [settings, setSettings] = useState(INITIAL_SETTINGS);
+        const [darkMode, setDarkMode] = useState(false);
+
+        const [toast, setToast] = useState(null);
+        const showToast = (msg, type = 'success') => {
+          setToast({ msg, type });
+          setTimeout(() => setToast(null), 3500);
+        };
+
+        const currentStudent = useMemo(() => {
+          return students.find(s => s.id === activeStudentId) || students[0];
+        }, [students, activeStudentId]);
+
+        useEffect(() => {
+          if (darkMode) document.documentElement.classList.add('dark');
+          else document.documentElement.classList.remove('dark');
+        }, [darkMode]);
+
+        const [showAddStudent, setShowAddStudent] = useState(false);
+        const [showAddPayment, setShowAddPayment] = useState(false);
+        const [showAddTest, setShowAddTest] = useState(false);
+        const [showSendNotice, setShowSendNotice] = useState(false);
+        const [selectedReceipt, setSelectedReceipt] = useState(null);
+        const [showIDCard, setShowIDCard] = useState(false);
+
+        const [payForm, setPayForm] = useState({ studentId: 1, amount: 3000, mode: 'UPI', notes: '' });
+
+        const handleAddPaymentSubmit = (e) => {
+          e.preventDefault();
+          const st = students.find(s => s.id === Number(payForm.studentId));
+          if (!st) return;
+          const newReceipt = `REC-2026-${String(payments.length + 101).padStart(4, '0')}`;
+          const newP = {
+            id: Date.now(),
+            receiptNumber: newReceipt,
+            studentName: st.studentName,
+            studentId: st.studentId,
+            courseName: st.courseName,
+            amount: Number(payForm.amount),
+            paymentDate: new Date().toISOString().split('T')[0],
+            paymentMode: payForm.mode,
+            reference: `${payForm.mode}-REF-${Math.floor(1000 + Math.random()*9000)}`,
+            notes: payForm.notes || 'Tuition Fee Payment'
+          };
+          setPayments([newP, ...payments]);
+          setStudents(students.map(s => {
+            if (s.id === st.id) {
+              const paid = s.paidFees + Number(payForm.amount);
+              const net = Math.max(0, s.totalFees - s.discountAmount);
+              return {
+                ...s,
+                paidFees: paid,
+                pendingFees: Math.max(0, net - paid)
+              };
+            }
+            return s;
+          }));
+          setShowAddPayment(false);
+          setSelectedReceipt(newP);
+          showToast(`Payment of ₹${payForm.amount} collected! Receipt #${newReceipt} generated.`);
+        };
+
+        return (
+          <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+            {toast && (
+              <div className={`fixed top-4 right-4 z-50 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-white font-medium ${
+                toast.type === 'error' ? 'bg-red-600' : 'bg-emerald-600'
+              }`}>
+                <i className={`fas ${toast.type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} text-xl`}></i>
+                <span>{toast.msg}</span>
+              </div>
+            )}
+
+            {/* Header */}
+            <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 shadow-sm">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={settings.tuitionLogo} alt="Logo" className="w-10 h-10 rounded-lg object-cover shadow-sm ring-2 ring-sky-500/20" />
+                  <div>
+                    <h1 className="font-heading font-bold text-lg sm:text-xl text-slate-900 dark:text-white leading-tight">
+                      {settings.tuitionName}
+                    </h1>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">English & Computer Learning Platform</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center"
+                  >
+                    <i className={`fas ${darkMode ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'}`}></i>
+                  </button>
+
+                  <div className="bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl flex items-center text-xs font-semibold">
+                    <button
+                      onClick={() => { setRole('Admin'); setActiveTab('dashboard'); }}
+                      className={`px-3 py-1.5 rounded-lg transition ${role === 'Admin' ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300'}`}
+                    >
+                      <i className="fas fa-user-shield mr-1.5"></i> Admin
+                    </button>
+                    <button
+                      onClick={() => { setRole('Teacher'); setActiveTab('dashboard'); }}
+                      className={`px-3 py-1.5 rounded-lg transition ${role === 'Teacher' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300'}`}
+                    >
+                      <i className="fas fa-chalkboard-teacher mr-1.5"></i> Teacher
+                    </button>
+                    <button
+                      onClick={() => { setRole('Student'); setActiveTab('dashboard'); }}
+                      className={`px-3 py-1.5 rounded-lg transition ${role === 'Student' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300'}`}
+                    >
+                      <i className="fas fa-user-graduate mr-1.5"></i> Student
+                    </button>
+                  </div>
+
+                  {role === 'Student' && (
+                    <select
+                      value={activeStudentId}
+                      onChange={(e) => setActiveStudentId(Number(e.target.value))}
+                      className="text-xs bg-slate-100 dark:bg-slate-700 font-semibold text-slate-800 dark:text-white rounded-lg px-2.5 py-1.5 outline-none"
+                    >
+                      {students.map(s => (
+                        <option key={s.id} value={s.id}>{s.studentName} ({s.studentId})</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              </div>
+            </header>
+
+            {/* Layout */}
+            <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row pb-20 md:pb-6 p-4 sm:p-6 gap-6">
+              <aside className="w-full md:w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 shrink-0 rounded-2xl shadow-sm hidden md:block">
+                <nav className="space-y-1">
+                  {role === 'Student' ? (
+                    <>
+                      <NavBtn active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon="fa-chart-pie" label="Dashboard" />
+                      <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon="fa-id-card" label="My Profile & ID" />
+                      <NavBtn active={activeTab === 'attendance'} onClick={() => setActiveTab('attendance')} icon="fa-calendar-check" label="Attendance" />
+                      <NavBtn active={activeTab === 'fees'} onClick={() => setActiveTab('fees')} icon="fa-receipt" label="Fees & Payments" />
+                      <NavBtn active={activeTab === 'tests'} onClick={() => setActiveTab('tests')} icon="fa-file-signature" label="Tests & Results" />
+                      <NavBtn active={activeTab === 'materials'} onClick={() => setActiveTab('materials')} icon="fa-book-open" label="Study Material" />
+                      <NavBtn active={activeTab === 'notifications'} onClick={() => setActiveTab('notifications')} icon="fa-bell" label="Notifications" badge={notifications.filter(n => !n.read).length} />
+                    </>
+                  ) : (
+                    <>
+                      <NavBtn active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon="fa-chart-pie" label="Dashboard" />
+                      <NavBtn active={activeTab === 'students'} onClick={() => setActiveTab('students')} icon="fa-users" label="Student Directory" badge={students.length} />
+                      <NavBtn active={activeTab === 'batches'} onClick={() => setActiveTab('batches')} icon="fa-layer-group" label="Batch Management" />
+                      <NavBtn active={activeTab === 'attendance_mgr'} onClick={() => setActiveTab('attendance_mgr')} icon="fa-calendar-alt" label="Mark Attendance" />
+                      <NavBtn active={activeTab === 'fees_mgr'} onClick={() => setActiveTab('fees_mgr')} icon="fa-wallet" label="Fees & Payments" />
+                      <NavBtn active={activeTab === 'tests_mgr'} onClick={() => setActiveTab('tests_mgr')} icon="fa-tasks" label="Tests & Marks Entry" />
+                      <NavBtn active={activeTab === 'materials_mgr'} onClick={() => setActiveTab('materials_mgr')} icon="fa-folder-open" label="Study Materials" />
+                      <NavBtn active={activeTab === 'notif_mgr'} onClick={() => setActiveTab('notif_mgr')} icon="fa-paper-plane" label="Dispatch Notices" />
+                      <NavBtn active={activeTab === 'reports'} onClick={() => setActiveTab('reports')} icon="fa-file-invoice" label="Reports & Export" />
+                      <NavBtn active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon="fa-cog" label="Tuition Settings" />
+                    </>
+                  )}
+                </nav>
+              </aside>
+
+              <main className="flex-1 overflow-y-auto">
+                {role === 'Student' && (
+                  <div>
+                    {activeTab === 'dashboard' && <StudentDashboard student={currentStudent} notifications={notifications} materials={materials} results={results} onIDCardClick={() => setShowIDCard(true)} />}
+                    {activeTab === 'profile' && <StudentProfile student={currentStudent} onShowIDCard={() => setShowIDCard(true)} />}
+                    {activeTab === 'attendance' && <StudentAttendance student={currentStudent} />}
+                    {activeTab === 'fees' && <StudentFees student={currentStudent} payments={payments.filter(p => p.studentId === currentStudent.studentId)} onReceipt={(p) => setSelectedReceipt(p)} />}
+                    {activeTab === 'tests' && <StudentTests student={currentStudent} results={results.filter(r => r.studentId === currentStudent.id)} tests={tests} />}
+                    {activeTab === 'materials' && <StudentMaterials materials={materials} courseName={currentStudent.courseName} />}
+                    {activeTab === 'notifications' && <StudentNotifications notifications={notifications} />}
+                  </div>
+                )}
+
+                {role !== 'Student' && (
+                  <div>
+                    {activeTab === 'dashboard' && (
+                      <AdminDashboard
+                        students={students}
+                        batches={batches}
+                        payments={payments}
+                        tests={tests}
+                        onAddStudent={() => setShowAddStudent(true)}
+                        onAddPayment={() => setShowAddPayment(true)}
+                        onAddTest={() => setShowAddTest(true)}
+                        onSendNotice={() => setShowSendNotice(true)}
+                      />
+                    )}
+                    {activeTab === 'students' && (
+                      <AdminStudents
+                        students={students}
+                        batches={batches}
+                        onAddStudent={() => setShowAddStudent(true)}
+                        onViewStudent={(s) => alert(`Student Dossier: ${s.studentName}`)}
+                        onDeleteStudent={(id) => {
+                          setStudents(students.filter(s => s.id !== id));
+                          showToast('Student record deleted.');
+                        }}
+                      />
+                    )}
+                    {activeTab === 'batches' && <AdminBatches batches={batches} setBatches={setBatches} showToast={showToast} />}
+                    {activeTab === 'attendance_mgr' && <AdminAttendance students={students} batches={batches} showToast={showToast} />}
+                    {activeTab === 'fees_mgr' && <AdminFees payments={payments} students={students} onAddPayment={() => setShowAddPayment(true)} onReceipt={(p) => setSelectedReceipt(p)} />}
+                    {activeTab === 'tests_mgr' && <AdminTests tests={tests} students={students} results={results} setResults={setResults} showToast={showToast} onAddTest={() => setShowAddTest(true)} />}
+                    {activeTab === 'materials_mgr' && <AdminMaterials materials={materials} setMaterials={setMaterials} showToast={showToast} onUpload={() => showToast('Upload modal opened')} />}
+                    {activeTab === 'notif_mgr' && <AdminNotifications notifications={notifications} setNotifications={setNotifications} showToast={showToast} onSendNotice={() => setShowSendNotice(true)} />}
+                    {activeTab === 'reports' && <AdminReports students={students} payments={payments} tests={tests} results={results} />}
+                    {activeTab === 'settings' && <AdminSettings settings={settings} setSettings={setSettings} showToast={showToast} />}
+                  </div>
+                )}
+              </main>
+            </div>
+
+            {/* Modals */}
+            {showAddStudent && (
+              <Modal title="Enroll New Student" onClose={() => setShowAddStudent(false)}>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const fd = new FormData(e.target);
+                  const newS = {
+                    id: Date.now(),
+                    studentId: `STU2026-0${students.length + 1}`,
+                    studentName: fd.get('studentName'),
+                    fatherName: fd.get('fatherName'),
+                    motherName: fd.get('motherName'),
+                    mobileNumber: fd.get('mobileNumber'),
+                    parentMobileNumber: fd.get('parentMobileNumber'),
+                    email: fd.get('email'),
+                    address: fd.get('address'),
+                    dateOfBirth: fd.get('dateOfBirth'),
+                    joiningDate: new Date().toISOString().split('T')[0],
+                    courseName: fd.get('courseName'),
+                    batchName: 'English Morning Batch (A1)',
+                    batchTiming: '08:00 AM - 09:30 AM',
+                    totalFees: Number(fd.get('totalFees')),
+                    discountAmount: Number(fd.get('discountAmount')),
+                    paidFees: Number(fd.get('paidFees')),
+                    pendingFees: Math.max(0, Number(fd.get('totalFees')) - Number(fd.get('discountAmount')) - Number(fd.get('paidFees'))),
+                    nextDueDate: '2026-08-25',
+                    status: 'Active'
+                  };
+                  setStudents([...students, newS]);
+                  setShowAddStudent(false);
+                  showToast(`Student ${newS.studentName} enrolled successfully!`);
+                }} className="space-y-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Student Full Name *</label>
+                      <input name="studentName" required className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" placeholder="e.g. Rahul Verma" />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Course *</label>
+                      <select name="courseName" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none">
+                        <option value="English">English</option>
+                        <option value="Computer">Computer</option>
+                        <option value="English & Computer">English & Computer Combo</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Student Mobile Number *</label>
+                      <input name="mobileNumber" required pattern="[0-9]{10}" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" placeholder="10 Digit Mobile" />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Parent Mobile Number *</label>
+                      <input name="parentMobileNumber" required pattern="[0-9]{10}" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" placeholder="Parent Contact" />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Father's Name</label>
+                      <input name="fatherName" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Mother's Name</label>
+                      <input name="motherName" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Total Course Fees (₹)</label>
+                      <input name="totalFees" type="number" defaultValue="6000" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Initial Paid Amount (₹)</label>
+                      <input name="paidFees" type="number" defaultValue="3000" className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none" />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-3 pt-3">
+                    <button type="button" onClick={() => setShowAddStudent(false)} className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancel</button>
+                    <button type="submit" className="px-5 py-2 rounded-lg bg-sky-600 text-white font-semibold shadow">Save Student</button>
+                  </div>
+                </form>
+              </Modal>
+            )}
+
+            {showAddPayment && (
+              <Modal title="Record Fee Payment" onClose={() => setShowAddPayment(false)}>
+                <form onSubmit={handleAddPaymentSubmit} className="space-y-4 text-sm">
+                  <div>
+                    <label className="font-semibold text-xs block mb-1">Select Student *</label>
+                    <select
+                      value={payForm.studentId}
+                      onChange={(e) => setPayForm({ ...payForm, studentId: Number(e.target.value) })}
+                      className="w-full border rounded-lg p-2.5 bg-slate-50 dark:bg-slate-700 outline-none font-medium"
+                    >
+                      {students.map(s => (
+                        <option key={s.id} value={s.id}>{s.studentName} ({s.studentId}) - Pending: ₹{s.pendingFees}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Payment Amount (₹) *</label>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        value={payForm.amount}
+                        onChange={(e) => setPayForm({ ...payForm, amount: e.target.value })}
+                        className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-xs block mb-1">Payment Mode *</label>
+                      <select
+                        value={payForm.mode}
+                        onChange={(e) => setPayForm({ ...payForm, mode: e.target.value })}
+                        className="w-full border rounded-lg p-2 bg-slate-50 dark:bg-slate-700 outline-none"
+                      >
+                        <option value="UPI">UPI / GPay / PhonePe</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Credit / Debit Card</option>
+                        <option value="Bank Transfer">Bank Transfer / NEFT</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-3 pt-3">
+                    <button type="button" onClick={() => setShowAddPayment(false)} className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancel</button>
+                    <button type="submit" className="px-5 py-2 rounded-lg bg-emerald-600 text-white font-semibold shadow">Collect Fee & Generate Receipt</button>
+                  </div>
+                </form>
+              </Modal>
+            )}
+
+            {selectedReceipt && (
+              <Modal title="Official Fee Receipt" onClose={() => setSelectedReceipt(null)}>
+                <div className="p-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl border font-mono text-xs space-y-4">
+                  <div className="text-center pb-3 border-b">
+                    <h2 className="font-bold text-lg text-sky-700">{settings.tuitionName}</h2>
+                    <p className="text-[11px] text-slate-500">{settings.address} • {settings.phone}</p>
+                    <span className="inline-block mt-2 bg-sky-100 text-sky-800 px-3 py-1 rounded-full font-bold">RECEIPT #{selectedReceipt.receiptNumber}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div><span className="text-slate-500">Student Name:</span> <strong>{selectedReceipt.studentName}</strong></div>
+                    <div><span className="text-slate-500">Student ID:</span> <strong>{selectedReceipt.studentId}</strong></div>
+                    <div><span className="text-slate-500">Date:</span> {selectedReceipt.paymentDate}</div>
+                    <div><span className="text-slate-500">Mode:</span> {selectedReceipt.paymentMode}</div>
+                  </div>
+                  <div className="py-2 px-3 bg-emerald-50 text-emerald-900 rounded-lg flex justify-between items-center text-sm font-bold">
+                    <span>Amount Paid:</span>
+                    <span>₹{selectedReceipt.amount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-end gap-3 pt-2 no-print">
+                    <button onClick={() => window.print()} className="px-4 py-2 bg-sky-600 text-white rounded-lg font-sans"><i className="fas fa-print mr-2"></i>Print Receipt</button>
+                  </div>
+                </div>
+              </Modal>
+            )}
+
+            {showIDCard && (
+              <Modal title="Digital Student ID Card" onClose={() => setShowIDCard(false)}>
+                <div className="max-w-xs mx-auto bg-gradient-to-br from-sky-600 to-indigo-800 text-white p-5 rounded-2xl shadow-2xl relative overflow-hidden">
+                  <div className="text-center pb-3 border-b border-white/20">
+                    <h3 className="font-heading font-bold text-sm uppercase">{settings.tuitionName}</h3>
+                    <p className="text-[10px] text-sky-200">STUDENT IDENTITY CARD</p>
+                  </div>
+                  <div className="my-4 flex flex-col items-center">
+                    <img src={currentStudent.photoUrl} className="w-20 h-20 rounded-full border-4 border-white object-cover shadow-md mb-2" />
+                    <h4 className="font-bold text-base">{currentStudent.studentName}</h4>
+                    <span className="bg-white/20 text-xs px-2.5 py-0.5 rounded-full font-mono">{currentStudent.studentId}</span>
+                  </div>
+                  <div className="text-xs space-y-1 bg-black/20 p-3 rounded-xl">
+                    <div className="flex justify-between"><span>Course:</span> <span>{currentStudent.courseName}</span></div>
+                    <div className="flex justify-between"><span>Contact:</span> <span>{currentStudent.mobileNumber}</span></div>
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-center no-print">
+                  <button onClick={() => window.print()} className="px-5 py-2 bg-sky-600 text-white font-medium rounded-lg shadow"><i className="fas fa-print mr-2"></i>Print ID Card</button>
+                </div>
+              </Modal>
+            )}
+          </div>
+        );
+      }
+
+      function NavBtn({ active, onClick, icon, label, badge }) {
+        return (
+          <button
+            onClick={onClick}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-medium text-xs transition ${
+              active ? 'bg-sky-600 text-white font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <i className={`fas ${icon} text-sm w-4 text-center ${active ? 'text-white' : 'text-slate-400'}`}></i>
+              <span>{label}</span>
+            </div>
+            {badge !== undefined && (
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${active ? 'bg-white text-sky-800' : 'bg-slate-200 dark:bg-slate-700'}`}>
+                {badge}
+              </span>
+            )}
+          </button>
+        );
+      }
+
+      function Modal({ title, onClose, children }) {
+        return (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full p-5 relative border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-between pb-3 mb-4 border-b">
+                <h3 className="font-heading font-bold text-base">{title}</h3>
+                <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500">
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              {children}
+            </div>
+          </div>
+        );
+      }
+
+      function StudentDashboard({ student, notifications, materials, results, onIDCardClick }) {
+        return (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-r from-sky-600 to-indigo-700 text-white rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row items-center gap-5">
+              <img src={student.photoUrl} className="w-20 h-20 rounded-full border-4 border-white/30 object-cover shadow-lg" />
+              <div className="text-center sm:text-left flex-1">
+                <h2 className="font-heading font-bold text-2xl">{student.studentName}</h2>
+                <p className="text-sky-100 text-sm mt-1">{student.courseName} • {student.batchName}</p>
+              </div>
+              <button onClick={onIDCardClick} className="px-4 py-2 bg-white text-sky-800 rounded-xl font-semibold text-xs shadow"><i className="fas fa-id-card mr-1.5"></i> Digital ID</button>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard icon="fa-calendar-check" color="bg-emerald-500" title="Attendance" value="88.5%" subtitle="28/32 Present Days" />
+              <KpiCard icon="fa-receipt" color="bg-amber-500" title="Fees Status" value={`₹${student.pendingFees}`} subtitle={student.pendingFees > 0 ? `Due: ${student.nextDueDate}` : 'All Fees Cleared'} />
+              <KpiCard icon="fa-file-signature" color="bg-indigo-500" title="Latest Test" value="88%" subtitle="Grade A (Rank #2)" />
+              <KpiCard icon="fa-book-open" color="bg-sky-500" title="Study Material" value={materials.length} subtitle="Notes & Assignments" />
+            </div>
+          </div>
+        );
+      }
+
+      function StudentProfile({ student, onShowIDCard }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 pb-6 border-b">
+              <img src={student.photoUrl} className="w-24 h-24 rounded-full object-cover border-4 border-sky-500/20" />
+              <div className="text-center sm:text-left flex-1">
+                <h2 className="font-heading font-bold text-xl">{student.studentName}</h2>
+                <p className="text-xs text-sky-600 font-semibold">{student.studentId} • {student.courseName}</p>
+              </div>
+              <button onClick={onShowIDCard} className="px-4 py-2 bg-sky-600 text-white rounded-xl font-medium text-xs shadow">View Digital ID</button>
+            </div>
+          </div>
+        );
+      }
+
+      function StudentAttendance({ student }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-sm space-y-6">
+            <h2 className="font-heading font-bold text-lg">Attendance Summary</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              <div className="p-4 rounded-xl bg-emerald-50 text-emerald-900"><p className="text-xs">Present Days</p><p className="text-xl font-bold">28</p></div>
+              <div className="p-4 rounded-xl bg-red-50 text-red-900"><p className="text-xs">Absent Days</p><p className="text-xl font-bold">2</p></div>
+              <div className="p-4 rounded-xl bg-amber-50 text-amber-900"><p className="text-xs">Leave Days</p><p className="text-xl font-bold">1</p></div>
+              <div className="p-4 rounded-xl bg-sky-50 text-sky-900"><p className="text-xs">Percentage</p><p className="text-xl font-bold">88.5%</p></div>
+            </div>
+          </div>
+        );
+      }
+
+      function StudentFees({ student, payments, onReceipt }) {
+        return (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-sm grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              <div><p className="text-xs text-slate-500">Total Course Fee</p><p className="text-lg font-bold">₹{student.totalFees}</p></div>
+              <div><p className="text-xs text-slate-500">Discount</p><p className="text-lg font-bold text-emerald-600">₹{student.discountAmount}</p></div>
+              <div><p className="text-xs text-slate-500">Paid Amount</p><p className="text-lg font-bold text-sky-600">₹{student.paidFees}</p></div>
+              <div><p className="text-xs text-slate-500">Pending Dues</p><p className="text-lg font-bold text-amber-600">₹{student.pendingFees}</p></div>
+            </div>
+          </div>
+        );
+      }
+
+      function StudentTests({ student, results, tests }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-sm space-y-4">
+            <h3 className="font-heading font-bold text-base">Academic Scorecards</h3>
+            {results.map(r => (
+              <div key={r.id} className="p-4 rounded-xl border bg-slate-50 dark:bg-slate-700/30 flex justify-between items-center">
+                <div><h4 className="font-bold text-sm">{r.testName || 'Combined Exam'}</h4><p className="text-xs text-slate-500">{r.remarks}</p></div>
+                <div className="font-bold text-sm text-sky-600">{r.obtainedMarks}/{r.totalMarks} ({r.grade})</div>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      function StudentMaterials({ materials }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-sm space-y-4">
+            <h3 className="font-heading font-bold text-base">Study Materials</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {materials.map(m => (
+                <div key={m.id} className="p-4 rounded-xl border bg-slate-50 dark:bg-slate-700/30 flex justify-between items-center">
+                  <div><span className="px-2 py-0.5 bg-sky-100 text-sky-800 text-[10px] font-bold rounded">{m.type}</span><h4 className="font-bold text-xs mt-1">{m.title}</h4></div>
+                  <button onClick={() => alert(`Downloading: ${m.title}`)} className="px-3 py-1 bg-sky-600 text-white text-xs font-semibold rounded"><i className="fas fa-download"></i></button>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function StudentNotifications({ notifications }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-sm space-y-3">
+            <h3 className="font-heading font-bold text-base mb-2">Notice Inbox</h3>
+            {notifications.map(n => (
+              <div key={n.id} className="p-4 rounded-xl border bg-slate-50 dark:bg-slate-700/30">
+                <span className="text-xs font-bold text-sky-600">{n.type}</span>
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-1">{n.title}</h4>
+                <p className="text-xs text-slate-500 mt-1">{n.message}</p>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      function AdminDashboard({ students, batches, payments, onAddStudent, onAddPayment, onAddTest, onSendNotice }) {
+        return (
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border shadow-sm">
+              <div>
+                <h2 className="font-heading font-bold text-lg">Admin Overview & Dashboard</h2>
+                <p className="text-xs text-slate-500">English & Computer Academy Live Operations</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={onAddStudent} className="px-3.5 py-2 bg-sky-600 text-white rounded-xl font-semibold text-xs shadow"><i className="fas fa-user-plus mr-1"></i>Add Student</button>
+                <button onClick={onAddPayment} className="px-3.5 py-2 bg-emerald-600 text-white rounded-xl font-semibold text-xs shadow"><i className="fas fa-cash-register mr-1"></i>Collect Fee</button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <KpiCard icon="fa-user-graduate" color="bg-sky-500" title="Active Students" value={students.length} subtitle="Enrolled 2026-27" />
+              <KpiCard icon="fa-receipt" color="bg-emerald-500" title="Fees Collected" value={`₹${payments.reduce((a,b)=>a+b.amount,0).toLocaleString()}`} subtitle="Real-time collection" />
+              <KpiCard icon="fa-exclamation-triangle" color="bg-amber-500" title="Pending Dues" value={`₹${students.reduce((a,b)=>a+b.pendingFees,0).toLocaleString()}`} subtitle="Outstanding Dues" />
+              <KpiCard icon="fa-layer-group" color="bg-indigo-500" title="Active Batches" value={batches.length} subtitle="Active Classes" />
+            </div>
+          </div>
+        );
+      }
+
+      function AdminStudents({ students, onAddStudent, onViewStudent, onDeleteStudent }) {
+        return (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border shadow-sm">
+              <h2 className="font-heading font-bold text-base">Student Directory</h2>
+              <button onClick={onAddStudent} className="px-4 py-2 bg-sky-600 text-white text-xs font-semibold rounded-xl"><i className="fas fa-plus mr-1"></i>Add Student</button>
+            </div>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border shadow-sm overflow-hidden">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 uppercase font-bold">
+                  <tr><th className="p-3">ID</th><th className="p-3">Name</th><th className="p-3">Course</th><th className="p-3">Mobile</th><th className="p-3">Pending</th><th className="p-3">Actions</th></tr>
+                </thead>
+                <tbody className="divide-y">
+                  {students.map(s => (
+                    <tr key={s.id}>
+                      <td className="p-3 font-mono font-bold text-sky-600">{s.studentId}</td>
+                      <td className="p-3 font-bold">{s.studentName}</td>
+                      <td className="p-3">{s.courseName}</td>
+                      <td className="p-3">{s.mobileNumber}</td>
+                      <td className="p-3 font-bold text-amber-600">₹{s.pendingFees}</td>
+                      <td className="p-3 space-x-2">
+                        <button onClick={() => onDeleteStudent(s.id)} className="text-red-500 font-bold"><i className="fas fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      }
+
+      function AdminBatches({ batches }) {
+        return (
+          <div className="space-y-4">
+            <h2 className="font-heading font-bold text-base">Active Batches</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {batches.map(b => (
+                <div key={b.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl border shadow-sm space-y-2">
+                  <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-[10px] font-bold rounded">{b.courseName}</span>
+                  <h3 className="font-bold text-sm">{b.batchName}</h3>
+                  <p className="text-xs text-slate-500">{b.timing} ({b.days})</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function AdminAttendance({ students, showToast }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border shadow-sm space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="font-heading font-bold text-lg">Mark Attendance</h2>
+              <button onClick={() => showToast('Marked all Present')} className="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl">Mark All Present</button>
+            </div>
+          </div>
+        );
+      }
+
+      function AdminFees({ payments, onAddPayment, onReceipt }) {
+        return (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border shadow-sm">
+              <h2 className="font-heading font-bold text-base">Fee Management</h2>
+              <button onClick={onAddPayment} className="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl">Collect Payment</button>
+            </div>
+          </div>
+        );
+      }
+
+      function AdminTests({ tests }) {
+        return (
+          <div className="space-y-4">
+            <h2 className="font-heading font-bold text-base">Test & Marks Entry</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {tests.map(t => (
+                <div key={t.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl border shadow-sm">
+                  <h3 className="font-bold text-sm">{t.testName}</h3>
+                  <p className="text-xs text-slate-500">Date: {t.testDate}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function AdminMaterials() {
+        return <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border shadow-sm"><h2 className="font-heading font-bold text-lg">Study Materials</h2></div>;
+      }
+
+      function AdminNotifications() {
+        return <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border shadow-sm"><h2 className="font-heading font-bold text-lg">Notifications</h2></div>;
+      }
+
+      function AdminReports() {
+        return <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border shadow-sm"><h2 className="font-heading font-bold text-lg">Reports & PDF Export</h2></div>;
+      }
+
+      function AdminSettings({ settings, setSettings, showToast }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border shadow-sm space-y-4 max-w-lg">
+            <h2 className="font-heading font-bold text-lg">Tuition Settings</h2>
+            <div>
+              <label className="font-semibold block text-xs mb-1">Tuition Academy Name</label>
+              <input value={settings.tuitionName} onChange={(e) => setSettings({...settings, tuitionName: e.target.value})} className="w-full border rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-700 outline-none" />
+            </div>
+            <button onClick={() => showToast('Settings updated!')} className="px-4 py-2 bg-sky-600 text-white font-semibold text-xs rounded-lg shadow">Save Settings</button>
+          </div>
+        );
+      }
+
+      function KpiCard({ icon, color, title, value, subtitle }) {
+        return (
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl ${color} text-white flex items-center justify-center text-base shrink-0 shadow`}>
+              <i className={`fas ${icon}`}></i>
+            </div>
+            <div>
+              <p className="text-[11px] text-slate-500 font-medium">{title}</p>
+              <h3 className="font-heading font-bold text-lg leading-tight text-slate-900 dark:text-white">{value}</h3>
+              <p className="text-[10px] text-slate-400 mt-0.5">{subtitle}</p>
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<StandaloneApp />);
+    }
+  </script>
+</body>
+</html>
